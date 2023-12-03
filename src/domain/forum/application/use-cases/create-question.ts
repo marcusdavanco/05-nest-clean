@@ -19,7 +19,7 @@ type CreateQuestionUseCaseResponse = Either<
     question: Question
   }
 >
-@Injectable() // Not the best sollution because it violates clean architecture, but the tradeoff justifies
+@Injectable() // Not the best solution because it violates clean architecture, but the tradeoff justifies
 export class CreateQuestionUseCase {
   constructor(private questionsRepository: QuestionsRepository) {}
 
