@@ -7,7 +7,7 @@ Content-type: application/json
 # @name create_account
 {
   "name": "Marcus Davanco",
-  "email": "marcus@email9.com",
+  "email": "marcus@email10.com",
   "password": "123456"
 }
 
