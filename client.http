@@ -30,8 +30,8 @@ Content-type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-  "title": "Chicken and eggs",
-  "content": "Which came first, chicken or eggs?"
+  "title": "New Question",
+  "content": "Which is the new question?"
 }
 
 ###
