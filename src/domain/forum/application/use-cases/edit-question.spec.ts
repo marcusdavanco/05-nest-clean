@@ -48,7 +48,7 @@ describe('Edit Question', () => {
       title: 'Pergunta teste',
       content: 'Conteúdo teste',
       questionId: newQuestion.id.toValue(),
-      attachmentIds: ['1', '3'],
+      attachmentsIds: ['1', '3'],
     })
 
     expect(inMemoryQuestionsRepository.items[0]).toMatchObject({
@@ -80,7 +80,7 @@ describe('Edit Question', () => {
       title: 'Pergunta teste',
       content: 'Conteúdo teste',
       questionId: newQuestion.id.toValue(),
-      attachmentIds: [],
+      attachmentsIds: [],
     })
 
     expect(result.isLeft()).toBe(true)
