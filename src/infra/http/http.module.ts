@@ -9,6 +9,7 @@ import { FetchRecentQuestionsUseCase } from '@/domain/forum/application/use-case
 import { RegisterStudentUseCase } from '@/domain/forum/application/use-cases/register-student'
 import { AuthenticateStudentUseCase } from '@/domain/forum/application/use-cases/authenticate-student'
 import { CryptographyModule } from '../cryptography/cryptography.module'
+import { StorageModule } from '../storage/storage.module'
 import { GetQuestionBySlugController } from './controllers/get-question-by-slug-controller'
 import { GetQuestionBySlugUseCase } from '@/domain/forum/application/use-cases/get-question-by-slug'
 import { EditQuestionController } from './controllers/edit-question.controller'
@@ -41,7 +42,7 @@ import { UploadAttachmentController } from './controllers/upload-attachment.cont
 import { UploadAndCreateAttachmentUseCase } from '@/domain/forum/application/use-cases/upload-and-create-attachments'
 
 @Module({
-  imports: [DatabaseModule, CryptographyModule, Storage],
+  imports: [DatabaseModule, CryptographyModule, StorageModule],
   controllers: [
     CreateAccountController,
     AuthenticateController,
