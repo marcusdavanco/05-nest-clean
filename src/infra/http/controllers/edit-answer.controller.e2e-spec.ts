@@ -6,6 +6,8 @@ import { JwtService } from '@nestjs/jwt'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
 import { AnswerFactory } from 'test/factories/make-answer'
+import { AnswerAttachmentFactory } from 'test/factories/make-answer-attachment'
+import { AttachmentFactory } from 'test/factories/make-attachment'
 import { QuestionFactory } from 'test/factories/make-question'
 import { StudentFactory } from 'test/factories/make-student'
 
@@ -14,13 +16,21 @@ describe('Answer question (E2E)', () => {
   let prisma: PrismaService
   let studentFactory: StudentFactory
   let answerFactory: AnswerFactory
+  let attachmentFactory: AttachmentFactory
+  let answerAttachmentFactory: AnswerAttachmentFactory
   let questionFactory: QuestionFactory
   let jwt: JwtService
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StudentFactory, QuestionFactory, AnswerFactory],
+      providers: [
+        StudentFactory,
+        QuestionFactory,
+        AnswerFactory,
+        AttachmentFactory,
+        AnswerAttachmentFactory,
+      ],
     }).compile()
 
     app = moduleRef.createNestApplication()
@@ -29,6 +39,8 @@ describe('Answer question (E2E)', () => {
     studentFactory = moduleRef.get(StudentFactory)
     questionFactory = moduleRef.get(QuestionFactory)
     answerFactory = moduleRef.get(AnswerFactory)
+    attachmentFactory = moduleRef.get(AttachmentFactory)
+    answerAttachmentFactory = moduleRef.get(AnswerAttachmentFactory)
 
     jwt = moduleRef.get(JwtService)
 
@@ -49,6 +61,21 @@ describe('Answer question (E2E)', () => {
       authorId: user.id,
     })
 
+    const attachment1 = await attachmentFactory.makePrismaAttachment()
+    const attachment2 = await attachmentFactory.makePrismaAttachment()
+
+    await answerAttachmentFactory.makePrismaAnswerAttachment({
+      attachmentId: attachment1.id,
+      answerId: answer.id,
+    })
+
+    await answerAttachmentFactory.makePrismaAnswerAttachment({
+      attachmentId: attachment2.id,
+      answerId: answer.id,
+    })
+
+    const attachment3 = await attachmentFactory.makePrismaAttachment()
+
     const answerId = answer.id.toString()
 
     const response = await request(app.getHttpServer())
@@ -56,6 +83,7 @@ describe('Answer question (E2E)', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
         content: 'New answer content',
+        attachments: [attachment1.id.toString(), attachment3.id.toString()],
       })
 
     expect(response.statusCode).toBe(204)
@@ -67,5 +95,23 @@ describe('Answer question (E2E)', () => {
     })
 
     expect(answerOnDatabase).toBeTruthy()
+
+    const attachmentsOnDatabase = await prisma.attachment.findMany({
+      where: {
+        answerId: answerOnDatabase?.id,
+      },
+    })
+
+    expect(attachmentsOnDatabase).toHaveLength(2)
+    expect(attachmentsOnDatabase).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: attachment1.id.toString(),
+        }),
+        expect.objectContaining({
+          id: attachment3.id.toString(),
+        }),
+      ]),
+    )
   })
 })
