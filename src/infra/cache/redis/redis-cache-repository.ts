@@ -15,6 +15,6 @@ export class RedisCacheRepository implements CacheRepository {
   }
 
   async delete(key: string): Promise<void> {
-    await this.delete(key)
+    await this.redis.del(key)
   }
 }
