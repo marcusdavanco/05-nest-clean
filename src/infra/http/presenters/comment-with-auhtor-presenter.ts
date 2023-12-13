@@ -1,4 +1,3 @@
-import { Comment } from '@/domain/forum/enterprise/entities/comment'
 import { CommentWithAuthor } from '@/domain/forum/enterprise/entities/value-objects/comment-with-author'
 
 export class CommentWithAuthorPresenter {
